@@ -1,0 +1,17 @@
+
+
+.main{
+    height: 100%;
+    max-width: 100vw;
+    display: flex;
+    justify-content: center;
+    /* margin-bottom: 40px; */
+    background-color: var(--clr-lightbiege) ;
+}
+
+.main__content{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+
+}
