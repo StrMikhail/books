@@ -1,18 +1,24 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const BookCard = ({ book }) => {
+    const hasImage = ['imageLinks'] in book.volumeInfo;
+
     return (
-        <div className="book__card">
+        <Link className="book__card">
             <div className="book__content">
                 <div className="book__image">
-                    <img
-                        src={
-                            book.volumeInfo.imageLinks.smallThumbnail !== undefined
-                                ? book.volumeInfo.imageLinks.smallThumbnail
-                                : book.volumeInfo.imageLinks.thumbnail
-                        }
-                        alt="book"
-                    />
+                    {hasImage ? (
+                        <img
+                            src={
+                                book.volumeInfo.imageLinks.thumbnail ||
+                                book.volumeInfo.imageLinks.thumbnail
+                            }
+                            alt="book"
+                        />
+                    ) : (
+                        <span></span>
+                    )}
 
                     <div className="book__info">
                         <span>{book.volumeInfo.title}</span>
@@ -29,7 +35,7 @@ const BookCard = ({ book }) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 };
 

@@ -1,37 +1,46 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchBooks } from '../store/books';
+import BookCard from '../components/BookCard';
+import Loading from '../components/Loading';
+import { fetchBooks, fetchMoreBooks } from '../store/books';
 
 const Main = () => {
     const dispatch = useDispatch();
     const { books, loading, page } = useSelector((state) => state.books);
-    const category = useSelector((state) => state.search.category);
+    const { category, sort, search } = useSelector((state) => state.search);
 
     useEffect(() => {
-        if (books) return;
-        dispatch(fetchBooks(category, page));
-    }, []);
+        console.log('грузим данные');
+        dispatch(fetchBooks(category, search, sort, page));
+    }, [category, sort, search, page]);
 
-    console.log(books);
+    const handleDowonloadMore = () => {
+        dispatch(fetchMoreBooks());
+    };
 
     return (
         <>
             <div className="main">
                 <div className="main__content container">
-                    {!loading &&
-                        books.items.map((book) => (
-                            <Link
-                                className="card"
-                                key={book.id}
-                                to={book.id}
-                                state={{ data: book }}>
-                                {book.volumeInfo.title}
-                            </Link>
-                        ))}
+                    {loading ? (
+                        <Loading />
+                    ) : (
+                        <>
+                            <div className="main__books">
+                                {books.map((book) => (
+                                    <BookCard book={book} />
+                                ))}
+                            </div>
+                            {books && (
+                                <button className="download" onClick={handleDowonloadMore}>
+                                    показать еще
+                                </button>
+                            )}
+                        </>
+                    )}
                 </div>
             </div>
-            {books && <button className="download">показать еще</button>}
         </>
     );
 };

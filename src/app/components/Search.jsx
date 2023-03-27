@@ -1,67 +1,52 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import booksService from '../service/books';
+import { setCurrentSearch } from '../store/search';
 import Input from './Input';
+import SearchResults from './SearchResults';
 
 const Search = () => {
+    const dispatch = useDispatch();
     const [books, setBooks] = useState();
     const [value, setValue] = useState('');
 
     useEffect(() => {
         if (!value) return setBooks();
-        const fetch = setTimeout(() => fetchSearchBooks(value, 1, 3), 300);
+        const fetch = setTimeout(() => fetchSearchBooks(value), 300);
         return () => clearTimeout(fetch);
     }, [value]);
 
-    const fetchSearchBooks = async (categoty, page, limit) => {
+    const fetchSearchBooks = async (search) => {
         try {
-            const data = await booksService.getAll(categoty, page, limit);
+            const data = await booksService.getSearchHeader(search);
             setBooks(data.items);
         } catch (error) {
             console.log('Error');
         }
     };
 
-    const handleChange = (e) => {
-        setValue(e.target.value);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        dispatch(setCurrentSearch(e.target[0].value));
+        setValue('');
     };
 
     return (
         <>
             <div className="search">
-                <Input name="search" type="search" value={value} onChange={handleChange} />
+                <form onSubmit={handleSubmit}>
+                    <Input
+                        name="search"
+                        type="search"
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                    />
+                </form>
                 {books && (
-                    <div className="search__result">
+                    <div className="search__result" style={{}}>
                         {books.map((book) => (
-                            <Link
-                                key={book.id}
-                                to={book.id}
-                                state={{ data: book }}
-                                className="serch__item">
-                                <div className="search__item-content">
-                                    <img
-                                        src={
-                                            book.volumeInfo.imageLinks.smallThumbnail !== undefined
-                                                ? book.volumeInfo.imageLinks.smallThumbnail
-                                                : book.volumeInfo.imageLinks.thumbnail
-                                        }
-                                        alt="book"
-                                    />
-                                    <div className="search__item-info">
-                                        <span>{book.volumeInfo.title}</span>
-                                        <p>
-                                            {book.volumeInfo.authors
-                                                ? book.volumeInfo.categories
-                                                : 'Категории не заданы'}
-                                        </p>
-                                        <p>
-                                            {book.volumeInfo.authors
-                                                ? book.volumeInfo.authors
-                                                : ' Авторы неизвестны'}
-                                        </p>
-                                    </div>
-                                </div>
-                            </Link>
+                            <SearchResults book={book} />
                         ))}
                     </div>
                 )}

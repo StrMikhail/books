@@ -1,10 +1,8 @@
 import React from 'react';
 
-const InputSelect = ({ options, id }) => {
+const InputSelect = ({ options, id, handleChange, select }) => {
     return (
-        <select
-            id={id}
-            onChange={(e) => console.log(e.target.options[e.target.selectedIndex].value)}>
+        <select id={id} onChange={handleChange}>
             {options.map((option) => (
                 <option key={option.value} value={option.value}>
                     {option.title}

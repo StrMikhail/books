@@ -1,6 +1,7 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import Input from './Input';
+import { setCurrentCategory, setCurrentSort } from '../store/search';
 import InputSelect from './InputSelect';
 import Search from './Search';
 
@@ -44,12 +45,18 @@ const setelcSort = [
         title: 'Новые',
     },
 ];
+
 const Header = () => {
     const location = useLocation();
+    const dispatch = useDispatch();
+    const { category, sort } = useSelector((state) => state.search);
 
-    const handleSubmitForm = (e) => {
-        e.preventDefault();
-        console.log((e.target[0].value = ''));
+    const handleChangeCategoty = (e) => {
+        dispatch(setCurrentCategory(e.target.value));
+    };
+
+    const handleChangeSort = (e) => {
+        dispatch(setCurrentSort(e.target.value));
     };
 
     return (
@@ -58,12 +65,20 @@ const Header = () => {
                 <span className="header__title">SHBOOKS</span>
                 {location.pathname === '/' && (
                     <div className="header__form">
-                        <form onSubmit={handleSubmitForm}>
-                            <Search />
-                        </form>
+                        <Search />
                         <div className="form__select">
-                            <InputSelect options={selectCategory} id={'category'} />
-                            <InputSelect options={setelcSort} id={'sort'} />
+                            <InputSelect
+                                select={category}
+                                options={selectCategory}
+                                handleChange={handleChangeCategoty}
+                                id={'category'}
+                            />
+                            <InputSelect
+                                select={sort}
+                                handleChange={handleChangeSort}
+                                options={setelcSort}
+                                id={'sort'}
+                            />
                         </div>
                     </div>
                 )}
