@@ -1,19 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './app/styles/index.css';
-import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
 
-import App from './app/App';
-import { createStore } from './app/store/createStore';
+import 'dayjs/locale/ru';
 
-const store = createStore();
+import './styles/import.css';
+
+import App from './App';
+import Provider from './hoc/Provider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <BrowserRouter>
-        <Provider store={store}>
-            <App />
-        </Provider>
-    </BrowserRouter>,
+    <Provider>
+        <App />
+    </Provider>,
 );
